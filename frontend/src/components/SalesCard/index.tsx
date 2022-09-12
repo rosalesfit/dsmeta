@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { sale } from "../../models/sale";
+import { Sale } from "../../models/sale";
 import { BASE_URL } from "../../utils/request";
 import NotificantionBotton from '../NotificantionBotton';
 import './styles.css';
@@ -16,17 +16,17 @@ function SalesCard() {
     const [minDate, setMinDate] = useState(min);
     const [maxDate, setMaxDate] = useState(max);
 
-    const [sales, setSales] = useState<sale[]>([]);
+    const [sales, setSales] = useState<Sale[]>([]);
 
-    useEffect(() => {
+    useEffect(()=> {
+        const dmin = minDate.toISOString().slice(0, 10);
+        const dmax = maxDate.toISOString().slice(0, 10);
 
-        const dmin =minDate.toISOString ().slice(0, 10);
-        const dmax =maxDate.toISOString ().slice(0, 10);
 
-        axios.get(`${BASE_URL}/sales?minDate=${dmin}&maxDate=${dmax}`)
-            .then(Response => {
-                setSales(Response.data.content);
-            })
+        axios.get (`${BASE_URL}/sales?minDate=${dmin}&maxDate=${dmax}`)
+        .then(response => {
+setSales(response.data.contente);
+        })
     }, [minDate, maxDate]);
 
     return (
@@ -67,25 +67,25 @@ function SalesCard() {
                     <tbody>
                         {
                             sales.map(sale => {
-                                return (
-                                    <tr key={sale.id}>
+                                return(
+                                    <tr key= {sale.id}>
                                         <td className="show992">{sale.id}</td>
                                         <td className="show576">{new Date(sale.date).toLocaleDateString()}</td>
-                                        <td>{sale.sellerName}</td>
-                                        <td className="show992">{sale.visited}5</td>
+                                        <td>{sale.sallerName}</td>
+                                        <td className="show992">{sale.visited}</td>
                                         <td className="show992">{sale.deals}</td>
                                         <td>R$ {sale.amount.toFixed(2)}</td>
-                                        <td>
+                                        <td> 
                                             <div className="dsmeta-red-btn-container">
-                                                <NotificantionBotton />
+                                                <NotificantionBotton saleId={sale.id}/>
                                             </div>
                                         </td>
                                     </tr>
                                 )
-
-                            })}
-
-                    </tbody>
+                            })
+                                  
+                        }
+                 </tbody> 
 
                 </table>
             </div>
@@ -93,6 +93,7 @@ function SalesCard() {
         </div>
 
     )
-}
 
+                    }              
+                        
 export default SalesCard;
